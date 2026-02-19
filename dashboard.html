@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard Harmony Scheduler — Gérez votre agenda et suivez votre bien-être.">
+  <title>Dashboard — Harmony Scheduler 2.0</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link rel="stylesheet" href="css/harmony-design-system.css">
+  <link rel="stylesheet" href="css/harmony-components.css">
+  <link rel="stylesheet" href="css/harmony-pages.css">
+  
+  <!-- FullCalendar -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+</head>
+<body>
+  <!-- ── Navigation ───────────────────────────────────────── -->
+  <nav class="hs-nav" role="navigation" aria-label="Navigation principale">
+    <div class="hs-container hs-nav__inner">
+      <a href="index.html" class="hs-nav__logo">
+        <span class="hs-nav__logo-icon">🌿</span>
+        <span>Harmony</span>
+      </a>
+
+      <ul class="hs-nav__links" role="list">
+        <li><a href="index.html" class="hs-nav__link" data-nav-link>Accueil</a></li>
+        <li><a href="dashboard.html" class="hs-nav__link hs-nav__link--active" data-nav-link>Dashboard</a></li>
+        <li><a href="booking.html" class="hs-nav__link" data-nav-link>Réservation</a></li>
+        <li><a href="analytics.html" class="hs-nav__link" data-nav-link>Insights</a></li>
+        <li><a href="settings.html" class="hs-nav__link" data-nav-link>Paramètres</a></li>
+      </ul>
+
+      <div class="hs-nav__actions">
+        <div class="hs-nav__notif">
+          <button id="notifBtn" class="hs-btn hs-btn--icon" aria-label="Notifications" data-tooltip="Notifications">
+            <span>🔔</span>
+          </button>
+          <span id="notifBadge" class="hs-nav__notif-badge" style="display: none">0</span>
+        </div>
+        <button id="themeToggle" class="hs-btn hs-btn--icon" aria-label="Basculer le thème">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Dashboard Layout ─────────────────────────────────── -->
+  <div class="hs-dashboard">
+    <!-- Sidebar -->
+    <aside class="hs-dashboard__sidebar" role="complementary" aria-label="Panneau latéral">
+      <!-- Score Harmony Widget -->
+      <div class="hs-card">
+        <div class="hs-card__header">
+          <div>
+            <div class="hs-card__title">Score Harmony</div>
+            <div class="hs-card__subtitle">Semaine en cours</div>
+          </div>
+          <a href="analytics.html" class="hs-btn hs-btn--ghost hs-btn--sm" aria-label="Voir les détails">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/>
+            </svg>
+          </a>
+        </div>
+        <div id="harmonyScoreWidget" aria-live="polite">
+          <div class="hs-skeleton" style="height: 200px; border-radius: var(--hs-radius-lg)"></div>
+        </div>
+      </div>
+
+      <!-- Score du jour -->
+      <div class="hs-card">
+        <div class="hs-card__header">
+          <div class="hs-card__title" style="font-size: var(--hs-text-sm)">Aujourd'hui</div>
+          <span id="dailyScoreLabel" style="font-size: var(--hs-text-sm); color: var(--hs-text-muted)">—</span>
+        </div>
+        <div class="hs-score-bar" aria-label="Score journalier">
+          <div id="dailyScoreBar" class="hs-score-bar__fill" style="width: 0%"></div>
+        </div>
+        <div id="dailyScoreDetails" style="margin-top: var(--hs-space-3); font-size: var(--hs-text-sm); color: var(--hs-text-soft)">
+          Chargement...
+        </div>
+      </div>
+
+      <!-- Alertes actives -->
+      <div class="hs-card" style="flex: 1;">
+        <div class="hs-card__header">
+          <div class="hs-card__title" style="font-size: var(--hs-text-sm)">⚠️ Alertes & Suggestions</div>
+        </div>
+        <div id="alertsContainer" aria-live="polite">
+          <p class="hs-text-muted" style="text-align: center; padding: var(--hs-space-6) 0">
+            Chargement des alertes...
+          </p>
+        </div>
+      </div>
+
+      <!-- Récupération recommandée -->
+      <div class="hs-card hs-card--recovery" id="recoveryCard" style="display: none">
+        <div class="hs-card__header">
+          <div class="hs-card__title" style="font-size: var(--hs-text-sm)">🧘 Récupération</div>
+        </div>
+        <div id="recoveryContent"></div>
+      </div>
+    </aside>
+
+    <!-- Topbar -->
+    <header class="hs-dashboard__topbar" role="banner">
+      <div>
+        <h1 style="font-size: var(--hs-text-xl); font-family: var(--hs-font-display); margin: 0">
+          Mon agenda
+        </h1>
+        <p style="font-size: var(--hs-text-sm); color: var(--hs-text-muted); margin: var(--hs-space-1) 0 0" id="currentDateDisplay">
+          Chargement...
+        </p>
+      </div>
+      <div class="hs-flex hs-gap-4" style="flex-wrap: wrap">
+        <button id="btnExportCSV" class="hs-btn hs-btn--ghost hs-btn--sm" data-tooltip="Exporter en CSV">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Export CSV
+        </button>
+        <button id="btnNewEvent" class="hs-btn hs-btn--primary hs-btn--sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Nouveau RDV
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="hs-dashboard__main" role="main">
+      <!-- Stats rapides -->
+      <div class="hs-stats-grid" aria-label="Statistiques de la semaine">
+        <div class="hs-stat-card">
+          <div class="hs-stat-card__label">RDV semaine</div>
+          <div class="hs-stat-card__value" id="statWeeklyCount">—</div>
+          <div class="hs-stat-card__change hs-stat-card__change--positive" id="statWeeklyChange">
+            +2 vs semaine dernière
+          </div>
+        </div>
+        <div class="hs-stat-card">
+          <div class="hs-stat-card__label">RDV aujourd'hui</div>
+          <div class="hs-stat-card__value" id="statTodayCount">—</div>
+        </div>
+        <div class="hs-stat-card">
+          <div class="hs-stat-card__label">En attente</div>
+          <div class="hs-stat-card__value" id="statPendingCount">—</div>
+        </div>
+        <div class="hs-stat-card">
+          <div class="hs-stat-card__label">Heures cette semaine</div>
+          <div class="hs-stat-card__value" id="statHoursCount">—</div>
+          <div class="hs-stat-card__change" id="statHoursStatus">
+            Sur la bonne voie
+          </div>
+        </div>
+      </div>
+
+      <!-- Prédictions de surcharge -->
+      <div id="overloadPrediction" class="hs-card" style="display: none; margin-bottom: var(--hs-space-6); border-left: 3px solid var(--hs-warning)">
+        <div class="hs-alert hs-alert--warning" style="margin: 0; background: transparent; border: none">
+          <span class="hs-alert__icon">🔮</span>
+          <div class="hs-alert__content">
+            <strong class="hs-alert__title">Prédiction de surcharge détectée</strong>
+            <p class="hs-alert__message" id="predictionMessage">
+              Basé sur votre planning actuel, nous anticipons une charge élevée dans les 3 prochains jours.
+            </p>
+            <div style="margin-top: var(--hs-space-3)">
+              <button id="btnViewPredictions" class="hs-btn hs-btn--sm hs-btn--secondary">
+                Voir les suggestions
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendrier -->
+      <div class="hs-card" style="padding: var(--hs-space-4)">
+        <div id="calendar" aria-label="Calendrier des rendez-vous"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── Scripts ──────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.min.js"></script>
+  <script type="module" src="js/pages/dashboard.js"></script>
+  
+  <!-- Date display -->
+  <script>
+    document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('fr-FR', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+  </script>
+</body>
+</html>

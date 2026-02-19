@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Réservez votre rendez-vous — Harmony Scheduler">
+  <title>Réserver un rendez-vous — Harmony Scheduler 2.0</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link rel="stylesheet" href="css/harmony-design-system.css">
+  <link rel="stylesheet" href="css/harmony-components.css">
+  <link rel="stylesheet" href="css/harmony-pages.css">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  
+  <style>
+    .booking-hero {
+      background: linear-gradient(135deg, var(--hs-sage-50) 0%, var(--hs-bg) 100%);
+      border-bottom: 1px solid var(--hs-border);
+      padding: var(--hs-space-12) 0 var(--hs-space-8);
+    }
+    
+    .booking-hero__avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--hs-sage), var(--hs-sage-600));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto var(--hs-space-4);
+      box-shadow: var(--hs-shadow-lg);
+    }
+    
+    .booking-hero__name {
+      font-family: var(--hs-font-display);
+      font-size: var(--hs-text-2xl);
+      text-align: center;
+    }
+    
+    .booking-hero__profession {
+      text-align: center;
+      color: var(--hs-text-soft);
+      margin-top: var(--hs-space-2);
+    }
+    
+    .booking-hero__meta {
+      display: flex;
+      justify-content: center;
+      gap: var(--hs-space-6);
+      margin-top: var(--hs-space-4);
+      flex-wrap: wrap;
+    }
+    
+    .booking-hero__meta-item {
+      font-size: var(--hs-text-sm);
+      color: var(--hs-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--hs-space-2);
+    }
+    
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: var(--hs-space-8);
+      padding: var(--hs-space-8) 0;
+      align-items: start;
+    }
+    
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--hs-space-4);
+      margin-bottom: var(--hs-space-8);
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: var(--hs-space-2);
+      font-size: var(--hs-text-sm);
+      color: var(--hs-text-muted);
+    }
+    
+    .step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--hs-surface-2);
+      border: 2px solid var(--hs-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--hs-text-xs);
+      font-weight: 700;
+      transition: all var(--hs-transition-fast);
+    }
+    
+    .step--active .step__num {
+      background: var(--hs-sage);
+      border-color: var(--hs-sage);
+      color: var(--hs-text-inverse);
+    }
+    
+    .step--active {
+      color: var(--hs-sage);
+      font-weight: 600;
+    }
+    
+    .step--completed .step__num {
+      background: var(--hs-success);
+      border-color: var(--hs-success);
+      color: var(--hs-text-inverse);
+    }
+    
+    .step-divider {
+      flex: 1;
+      height: 2px;
+      background: var(--hs-border);
+      max-width: 40px;
+    }
+    
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--hs-space-2);
+    }
+    
+    .slot-btn {
+      padding: var(--hs-space-3) var(--hs-space-2);
+      background: var(--hs-surface);
+      border: 1.5px solid var(--hs-border);
+      border-radius: var(--hs-radius-md);
+      font-size: var(--hs-text-sm);
+      font-weight: 500;
+      color: var(--hs-text);
+      cursor: pointer;
+      transition: all var(--hs-transition-fast);
+    }
+    
+    .slot-btn:hover {
+      border-color: var(--hs-sage);
+      background: var(--hs-sage-50);
+    }
+    
+    .slot-btn--selected {
+      border-color: var(--hs-sage);
+      background: var(--hs-sage);
+      color: var(--hs-text-inverse);
+    }
+    
+    .slot-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .booking-success {
+      text-align: center;
+      padding: var(--hs-space-12);
+    }
+    
+    .booking-success__icon {
+      font-size: 4rem;
+      margin-bottom: var(--hs-space-5);
+      animation: bounce 1s ease;
+    }
+    
+    @media (max-width: 1024px) {
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="hs-nav" role="navigation">
+    <div class="hs-container hs-nav__inner">
+      <a href="index.html" class="hs-nav__logo">
+        <span class="hs-nav__logo-icon">🌿</span>
+        <span>Harmony</span>
+      </a>
+      <div class="hs-nav__actions">
+        <button id="themeToggle" class="hs-btn hs-btn--icon" aria-label="Basculer le thème">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a href="dashboard.html" class="hs-btn hs-btn--ghost hs-btn--sm">
+          ← Mon espace
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Professionnel -->
+  <section class="booking-hero" aria-labelledby="profName">
+    <div class="hs-container" style="text-align: center">
+      <div class="booking-hero__avatar" role="img" aria-label="Avatar du professionnel">🧘</div>
+      <h1 class="booking-hero__name" id="bookingProfName">—</h1>
+      <p class="booking-hero__profession" id="bookingProfTitle">—</p>
+      <div class="booking-hero__meta">
+        <span class="booking-hero__meta-item">
+          <span>📍</span>
+          <span>En ligne & présentiel</span>
+        </span>
+        <span class="booking-hero__meta-item">
+          <span>⏱</span>
+          <span>60 min / séance</span>
+        </span>
+        <span class="booking-hero__meta-item">
+          <span>🌿</span>
+          <span>Pauses incluses</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenu Principal -->
+  <main class="hs-container" role="main">
+    <div class="booking-layout">
+      <!-- Colonne Gauche: Calendrier + Créneaux -->
+      <div>
+        <!-- Étapes -->
+        <div class="step-indicator" aria-label="Étapes de réservation">
+          <div class="step step--active" id="step1">
+            <span class="step__num">1</span>
+            <span>Choisir une date</span>
+          </div>
+          <div class="step-divider"></div>
+          <div class="step" id="step2">
+            <span class="step__num">2</span>
+            <span>Sélectionner un créneau</span>
+          </div>
+          <div class="step-divider"></div>
+          <div class="step" id="step3">
+            <span class="step__num">3</span>
+            <span>Vos coordonnées</span>
+          </div>
+        </div>
+
+        <!-- Calendrier -->
+        <div class="hs-card" style="margin-bottom: var(--hs-space-6)">
+          <div class="hs-card__header">
+            <div class="hs-card__title">📅 Choisissez une date</div>
+          </div>
+          <div id="bookingCalendar" aria-label="Calendrier de sélection de date"></div>
+          <p style="font-size: var(--hs-text-xs); color: var(--hs-text-muted); margin-top: var(--hs-space-3)">
+            Les jours grisés ne sont pas disponibles.
+          </p>
+        </div>
+
+        <!-- Créneaux -->
+        <div class="hs-card">
+          <div class="hs-card__header">
+            <div class="hs-card__title">⏰ Créneaux disponibles</div>
+            <span id="selectedDateLabel" style="font-size: var(--hs-text-sm); color: var(--hs-sage)">
+              — Sélectionnez une date
+            </span>
+          </div>
+          <div id="slotsList" aria-live="polite" aria-label="Liste des créneaux">
+            <p style="color: var(--hs-text-muted); text-align: center; padding: var(--hs-space-8) 0">
+              Cliquez sur une date dans le calendrier pour voir les créneaux libres.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne Droite: Formulaire -->
+      <div>
+        <div id="bookingFormSection" class="hs-hidden">
+          <div class="hs-card">
+            <div class="hs-card__header">
+              <div>
+                <div class="hs-card__title">✍️ Vos informations</div>
+                <div class="hs-card__subtitle">
+                  Créneau sélectionné:
+                  <strong id="selectedSlotLabel" style="color: var(--hs-sage)">—</strong>
+                </div>
+              </div>
+            </div>
+
+            <form id="formBooking" novalidate>
+              <input type="hidden" id="bookingStart" name="bookingStart">
+              <input type="hidden" id="bookingEnd" name="bookingEnd">
+
+              <div class="hs-field-group">
+                <label class="hs-field-label" for="bookClientName">
+                  Votre nom complet <span style="color: var(--hs-danger)">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="bookClientName" 
+                  name="clientName"
+                  class="hs-field" 
+                  placeholder="Prénom Nom"
+                  required 
+                  autocomplete="name"
+                >
+              </div>
+
+              <div class="hs-field-group">
+                <label class="hs-field-label" for="bookClientEmail">
+                  Email <span style="color: var(--hs-danger)">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="bookClientEmail" 
+                  name="clientEmail"
+                  class="hs-field" 
+                  placeholder="vous@exemple.fr"
+                  required 
+                  autocomplete="email"
+                >
+              </div>
+
+              <div class="hs-field-group">
+                <label class="hs-field-label" for="bookClientPhone">Téléphone</label>
+                <input 
+                  type="tel" 
+                  id="bookClientPhone" 
+                  name="clientPhone"
+                  class="hs-field" 
+                  placeholder="06 12 34 56 78"
+                  autocomplete="tel"
+                >
+              </div>
+
+              <div class="hs-field-group">
+                <label class="hs-field-label" for="bookNotes">Message (optionnel)</label>
+                <textarea 
+                  id="bookNotes" 
+                  name="notes" 
+                  class="hs-field" 
+                  rows="3"
+                  placeholder="Informations utiles pour la séance..."
+                ></textarea>
+              </div>
+
+              <label style="display: flex; align-items: flex-start; gap: var(--hs-space-3); font-size: var(--hs-text-sm); color: var(--hs-text-soft); cursor: pointer; margin-bottom: var(--hs-space-5)">
+                <input 
+                  type="checkbox" 
+                  name="gdpr" 
+                  required
+                  style="margin-top: 2px; flex-shrink: 0; accent-color: var(--hs-sage)"
+                >
+                <span>J'accepte que mes données soient utilisées dans le cadre de ce rendez-vous.</span>
+              </label>
+
+              <button type="submit" id="btnBookingSubmit" class="hs-btn hs-btn--primary" style="width: 100%">
+                Confirmer ma demande
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Message de Succès -->
+        <div id="bookingSuccess" class="hs-hidden">
+          <div class="hs-card booking-success">
+            <div class="booking-success__icon">🎉</div>
+            <h2 style="font-family: var(--hs-font-display); margin-bottom: var(--hs-space-4)">
+              Demande envoyée !
+            </h2>
+            <p style="color: var(--hs-text-soft)">
+              Votre demande de rendez-vous a été transmise.
+              Vous recevrez une confirmation dès que le professionnel l'aura validée.
+            </p>
+            <button onclick="location.reload()" class="hs-btn hs-btn--secondary" style="margin-top: var(--hs-space-6)">
+              Prendre un autre rendez-vous
+            </button>
+          </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="hs-card" style="margin-top: var(--hs-space-5); background: var(--hs-sage-50); border-color: var(--hs-sage-200)">
+          <h3 style="font-size: var(--hs-text-sm); font-family: var(--hs-font-display); margin-bottom: var(--hs-space-3); color: var(--hs-sage-700)">
+            🌿 Une pause est toujours prévue
+          </h3>
+          <p style="font-size: var(--hs-text-sm); color: var(--hs-text-soft); margin: 0">
+            20 minutes de transition sont automatiquement réservées entre chaque rendez-vous
+            pour permettre au praticien de se ressourcer pleinement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="hs-footer" role="contentinfo">
+    <div class="hs-container">
+      <p class="hs-footer__copy">Propulsé par 🌿 Harmony Scheduler 2.0</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/fr.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/pages/booking.js"></script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Analytics Harmony Scheduler — Insights sur votre activité">
+  <title>Insights — Harmony Scheduler 2.0</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link rel="stylesheet" href="css/harmony-design-system.css">
+  <link rel="stylesheet" href="css/harmony-components.css">
+  <link rel="stylesheet" href="css/harmony-pages.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  
+  <style>
+    .analytics-header {
+      background: var(--hs-surface);
+      border-bottom: 1px solid var(--hs-border);
+      padding: var(--hs-space-8) 0;
+    }
+    
+    .analytics-header__title {
+      font-family: var(--hs-font-display);
+      font-size: var(--hs-text-3xl);
+      margin-bottom: var(--hs-space-2);
+    }
+    
+    .analytics-header__subtitle {
+      color: var(--hs-text-soft);
+    }
+    
+    .chart-card {
+      background: var(--hs-surface);
+      border: 1px solid var(--hs-border);
+      border-radius: var(--hs-radius-lg);
+      padding: var(--hs-space-6);
+    }
+    
+    .chart-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--hs-space-5);
+    }
+    
+    .chart-card__title {
+      font-family: var(--hs-font-display);
+      font-size: var(--hs-text-lg);
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+    
+    .insight-card {
+      background: var(--hs-surface);
+      border: 1px solid var(--hs-border);
+      border-radius: var(--hs-radius-lg);
+      padding: var(--hs-space-5);
+      display: flex;
+      gap: var(--hs-space-4);
+      align-items: flex-start;
+    }
+    
+    .insight-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--hs-radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--hs-text-xl);
+      flex-shrink: 0;
+    }
+    
+    .insight-card__icon--success {
+      background: var(--hs-success-50);
+    }
+    
+    .insight-card__icon--warning {
+      background: var(--hs-warning-50);
+    }
+    
+    .insight-card__icon--info {
+      background: var(--hs-info-50);
+    }
+    
+    .insight-card__content {
+      flex: 1;
+    }
+    
+    .insight-card__title {
+      font-weight: 600;
+      margin-bottom: var(--hs-space-1);
+    }
+    
+    .insight-card__text {
+      font-size: var(--hs-text-sm);
+      color: var(--hs-text-soft);
+      margin: 0;
+    }
+    
+    .score-history-item {
+      display: flex;
+      align-items: center;
+      gap: var(--hs-space-4);
+      padding: var(--hs-space-3) 0;
+      border-bottom: 1px solid var(--hs-border);
+    }
+    
+    .score-history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .score-history-item__date {
+      font-size: var(--hs-text-sm);
+      color: var(--hs-text-muted);
+      width: 100px;
+    }
+    
+    .score-history-item__bar {
+      flex: 1;
+      height: 8px;
+      background: var(--hs-surface-2);
+      border-radius: var(--hs-radius-full);
+      overflow: hidden;
+    }
+    
+    .score-history-item__fill {
+      height: 100%;
+      border-radius: var(--hs-radius-full);
+      transition: width 0.5s ease;
+    }
+    
+    .score-history-item__value {
+      font-weight: 600;
+      width: 40px;
+      text-align: right;
+    }
+    
+    .prediction-card {
+      background: var(--hs-warning-50);
+      border: 1px solid var(--hs-warning-100);
+      border-radius: var(--hs-radius-lg);
+      padding: var(--hs-space-5);
+    }
+    
+    .prediction-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--hs-space-3);
+      margin-bottom: var(--hs-space-3);
+    }
+    
+    .prediction-card__icon {
+      font-size: var(--hs-text-xl);
+    }
+    
+    .prediction-card__title {
+      font-weight: 600;
+      color: var(--hs-warning-600);
+    }
+    
+    .prediction-card__text {
+      font-size: var(--hs-text-sm);
+      color: var(--hs-text-soft);
+      margin: 0 0 var(--hs-space-4);
+    }
+    
+    .prediction-card__actions {
+      display: flex;
+      gap: var(--hs-space-3);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="hs-nav" role="navigation">
+    <div class="hs-container hs-nav__inner">
+      <a href="index.html" class="hs-nav__logo">
+        <span class="hs-nav__logo-icon">🌿</span>
+        <span>Harmony</span>
+      </a>
+      <ul class="hs-nav__links" role="list">
+        <li><a href="index.html" class="hs-nav__link" data-nav-link>Accueil</a></li>
+        <li><a href="dashboard.html" class="hs-nav__link" data-nav-link>Dashboard</a></li>
+        <li><a href="booking.html" class="hs-nav__link" data-nav-link>Réservation</a></li>
+        <li><a href="analytics.html" class="hs-nav__link hs-nav__link--active" data-nav-link>Insights</a></li>
+        <li><a href="settings.html" class="hs-nav__link" data-nav-link>Paramètres</a></li>
+      </ul>
+      <div class="hs-nav__actions">
+        <button id="themeToggle" class="hs-btn hs-btn--icon" aria-label="Basculer le thème">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="analytics-header">
+    <div class="hs-container">
+      <h1 class="analytics-header__title">📊 Insights & Analytics</h1>
+      <p class="analytics-header__subtitle">
+        Visualisez votre activité et suivez votre bien-être professionnel
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="hs-container" style="padding: var(--hs-space-8) 0" role="main">
+    <!-- Score Harmony Principal -->
+    <div class="hs-card" style="margin-bottom: var(--hs-space-6)">
+      <div class="hs-card__header">
+        <div>
+          <div class="hs-card__title">🌿 Score Harmony — Vue d'ensemble</div>
+          <div class="hs-card__subtitle">Analyse de votre semaine en cours</div>
+        </div>
+        <a href="dashboard.html" class="hs-btn hs-btn--ghost hs-btn--sm">
+          Retour au dashboard
+        </a>
+      </div>
+      <div id="harmonyScoreWidgetDetailed" style="max-width: 500px; margin: 0 auto">
+        <div class="hs-skeleton" style="height: 300px; border-radius: var(--hs-radius-lg)"></div>
+      </div>
+    </div>
+
+    <!-- Prédictions -->
+    <div id="predictionsSection" class="prediction-card hs-hidden" style="margin-bottom: var(--hs-space-6)">
+      <div class="prediction-card__header">
+        <span class="prediction-card__icon">🔮</span>
+        <span class="prediction-card__title">Prédiction de surcharge détectée</span>
+      </div>
+      <p class="prediction-card__text" id="predictionText">
+        Basé sur votre planning actuel, nous anticipons une charge élevée dans les jours à venir.
+      </p>
+      <div class="prediction-card__actions">
+        <button id="btnViewBlockSuggestions" class="hs-btn hs-btn--secondary hs-btn--sm">
+          Voir les suggestions de blocage
+        </button>
+        <button id="btnDismissPrediction" class="hs-btn hs-btn--ghost hs-btn--sm">
+          Ignorer
+        </button>
+      </div>
+    </div>
+
+    <!-- Grille de Graphiques -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--hs-space-6); margin-bottom: var(--hs-space-6)">
+      <!-- Graphique RDV par jour -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <div class="chart-card__title">📅 Rendez-vous par jour</div>
+          <select id="chartPeriod" class="hs-field hs-field--sm" style="width: auto">
+            <option value="7">7 jours</option>
+            <option value="30">30 jours</option>
+            <option value="90">3 mois</option>
+          </select>
+        </div>
+        <div class="chart-container">
+          <canvas id="appointmentsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Graphique Score Harmony -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <div class="chart-card__title">🌿 Évolution du Score Harmony</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="scoreChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Graphique Heures travaillées -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <div class="chart-card__title">⏰ Heures travaillées</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="hoursChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Graphique Distribution horaire -->
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <div class="chart-card__title">🕐 Distribution horaire</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="timeDistributionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <div style="margin-bottom: var(--hs-space-6)">
+      <h2 style="font-family: var(--hs-font-display); margin-bottom: var(--hs-space-4)">💡 Recommandations</h2>
+      <div id="insightsList" style="display: grid; gap: var(--hs-space-4)">
+        <div class="hs-skeleton" style="height: 100px; border-radius: var(--hs-radius-lg)"></div>
+        <div class="hs-skeleton" style="height: 100px; border-radius: var(--hs-radius-lg)"></div>
+      </div>
+    </div>
+
+    <!-- Historique des Scores -->
+    <div class="hs-card">
+      <div class="hs-card__header">
+        <div class="hs-card__title">📈 Historique des Scores</div>
+      </div>
+      <div id="scoreHistoryList">
+        <div class="hs-skeleton" style="height: 200px; border-radius: var(--hs-radius-lg)"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="hs-footer" role="contentinfo">
+    <div class="hs-container">
+      <div class="hs-footer__bottom">
+        <p class="hs-footer__copy">© 2025 Harmony Scheduler 2.0</p>
+        <span class="hs-badge hs-badge--sage">v2.0.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/pages/analytics.js"></script>
+</body>
+</html>

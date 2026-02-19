@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Harmony Scheduler 2.0 — Gérez vos rendez-vous avec sérénité. Prévention du burnout par IA pour professionnels indépendants.">
+  <meta name="theme-color" content="#F7F5F0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  
+  <title>Harmony Scheduler 2.0 — Gestion de rendez-vous bien-être</title>
+  
+  <!-- Preconnect pour performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/harmony-design-system.css">
+  <link rel="stylesheet" href="css/harmony-components.css">
+  <link rel="stylesheet" href="css/harmony-pages.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  
+  <!-- PWA Manifest (pour futur) -->
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <nav class="hs-nav" role="navigation" aria-label="Navigation principale">
+    <div class="hs-container hs-nav__inner">
+      <a href="index.html" class="hs-nav__logo" aria-label="Harmony Scheduler — Accueil">
+        <span class="hs-nav__logo-icon">🌿</span>
+        <span>Harmony</span>
+      </a>
+
+      <ul class="hs-nav__links" role="list">
+        <li><a href="index.html" class="hs-nav__link hs-nav__link--active" data-nav-link>Accueil</a></li>
+        <li><a href="dashboard.html" class="hs-nav__link" data-nav-link>Dashboard</a></li>
+        <li><a href="booking.html" class="hs-nav__link" data-nav-link>Réservation</a></li>
+        <li><a href="analytics.html" class="hs-nav__link" data-nav-link>Insights</a></li>
+        <li><a href="settings.html" class="hs-nav__link" data-nav-link>Paramètres</a></li>
+      </ul>
+
+      <div class="hs-nav__actions">
+        <button id="themeToggle" class="hs-btn hs-btn--icon" aria-label="Basculer le thème" data-tooltip="Thème clair/sombre">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a href="dashboard.html" class="hs-btn hs-btn--primary hs-btn--sm">
+          Accéder <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero Section ───────────────────────────────────── -->
+  <main>
+    <section class="hs-hero" aria-labelledby="heroTitle">
+      <div class="hs-container hs-hero__container">
+        <div class="hs-hero__content" data-animate>
+          <span class="hs-hero__eyebrow">
+            <span class="hs-hero__eyebrow-icon">✨</span>
+            Bien-être professionnel
+          </span>
+          
+          <h1 class="hs-hero__title" id="heroTitle">
+            Gérez vos RDV.
+            <em>Préservez votre énergie.</em>
+          </h1>
+          
+          <p class="hs-hero__description">
+            Harmony Scheduler 2.0 est l'outil de prise de rendez-vous pensé pour les indépendants.
+            Notre algorithme <strong>Harmony Insights</strong> analyse votre charge de travail
+            en temps réel pour prévenir le surmenage avant qu'il n'arrive.
+          </p>
+          
+          <div class="hs-hero__cta">
+            <a href="dashboard.html" class="hs-btn hs-btn--primary hs-btn--lg">
+              Ouvrir mon espace
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="booking.html" class="hs-btn hs-btn--secondary hs-btn--lg">
+              Page de réservation
+            </a>
+          </div>
+          
+          <div class="hs-hero__stats">
+            <div class="hs-hero__stat" data-counter="98">
+              <div class="hs-hero__stat-number">
+                <span class="hs-hero__stat-value">0</span>%
+              </div>
+              <div class="hs-hero__stat-label">pros satisfaits</div>
+            </div>
+            <div class="hs-hero__stat" data-counter="3">
+              <div class="hs-hero__stat-number">
+                <span class="hs-hero__stat-value">0</span>x
+              </div>
+              <div class="hs-hero__stat-label">moins de burnout</div>
+            </div>
+            <div class="hs-hero__stat" data-counter="20">
+              <div class="hs-hero__stat-number">
+                <span class="hs-hero__stat-value">0</span>%
+              </div>
+              <div class="hs-hero__stat-label">de temps récupéré</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup visuel du score Harmony -->
+        <div class="hs-hero__visual" data-animate style="transition-delay: 0.2s">
+          <div class="hs-mockup-card">
+            <div class="hs-mockup-score">
+              <div class="hs-mockup-ring" aria-hidden="true">
+                <svg viewBox="0 0 100 100">
+                  <circle class="hs-mockup-track" cx="50" cy="50" r="42"/>
+                  <circle class="hs-mockup-fill" cx="50" cy="50" r="42" 
+                          stroke-dasharray="263.9" stroke-dashoffset="47.5"/>
+                </svg>
+                <span class="hs-mockup-ring-val">82</span>
+              </div>
+              <div class="hs-mockup-score-info">
+                <div class="hs-mockup-score-title">Score Harmony</div>
+                <div class="hs-mockup-score-subtitle">Semaine équilibrée 🌿</div>
+                <span class="hs-badge hs-badge--success">● Tout va bien</span>
+              </div>
+            </div>
+            
+            <div class="hs-mockup-events">
+              <div class="hs-mockup-event">
+                <div class="hs-mockup-event-dot" style="background: #22c55e"></div>
+                <span class="hs-mockup-event-name">09:00 — Marie Dupont</span>
+                <span class="hs-mockup-event-duration">1h</span>
+              </div>
+              <div class="hs-mockup-event hs-mockup-event--break">
+                <div class="hs-mockup-event-dot" style="background: #78909C"></div>
+                <span class="hs-mockup-event-name">🍃 Pause de récupération</span>
+                <span class="hs-mockup-event-duration">20 min</span>
+              </div>
+              <div class="hs-mockup-event">
+                <div class="hs-mockup-event-dot" style="background: #22c55e"></div>
+                <span class="hs-mockup-event-name">10:20 — Thomas Rey</span>
+                <span class="hs-mockup-event-duration">1h</span>
+              </div>
+              <div class="hs-mockup-event">
+                <div class="hs-mockup-event-dot" style="background: #f97316"></div>
+                <span class="hs-mockup-event-name">11:40 — Camille Fort</span>
+                <span class="hs-mockup-event-duration">1h</span>
+                <span class="hs-mockup-event-warning" title="Dernière séance avant pause">⚠️</span>
+              </div>
+            </div>
+            
+            <div class="hs-mockup-recovery">
+              <span class="hs-mockup-recovery-icon">🧘</span>
+              <span class="hs-mockup-recovery-text">Récupération recommandée: 4h cette semaine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Features Section ───────────────────────────────── -->
+    <section class="hs-features" aria-labelledby="featuresTitle">
+      <div class="hs-container">
+        <header class="hs-section-header" data-animate>
+          <span class="hs-section-header__eyebrow">Fonctionnalités</span>
+          <h2 id="featuresTitle">Tout ce dont vous avez besoin</h2>
+          <p class="hs-section-header__description">
+            Conçu pour les professionnels qui veulent travailler mieux, pas plus.
+          </p>
+        </header>
+
+        <div class="hs-features-grid">
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.05s">
+            <div class="hs-feature-card__icon">📅</div>
+            <h3 class="hs-feature-card__title">Calendrier intelligent</h3>
+            <p class="hs-feature-card__description">
+              Glissez, déposez, redimensionnez vos rendez-vous. Synchronisation
+              en temps réel avec vos disponibilités et pauses automatiques.
+            </p>
+          </article>
+          
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.1s">
+            <div class="hs-feature-card__icon">🌿</div>
+            <h3 class="hs-feature-card__title">Score Harmony Avancé</h3>
+            <p class="hs-feature-card__description">
+              Un indicateur 0–100 basé sur 6 dimensions. Alertes intelligentes
+              et prévention prédictive du burnout.
+            </p>
+          </article>
+          
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.15s">
+            <div class="hs-feature-card__icon">⏸️</div>
+            <h3 class="hs-feature-card__title">Pauses Automatiques IA</h3>
+            <p class="hs-feature-card__description">
+              20 minutes insérées intelligemment entre chaque rendez-vous.
+              Votre cerveau vous remerciera.
+            </p>
+          </article>
+          
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.2s">
+            <div class="hs-feature-card__icon">👥</div>
+            <h3 class="hs-feature-card__title">Réservation Client</h3>
+            <p class="hs-feature-card__description">
+              Vos clients réservent eux-mêmes sur votre page personnalisée.
+              Fini les échanges d'emails interminables.
+            </p>
+          </article>
+          
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.25s">
+            <div class="hs-feature-card__icon">📊</div>
+            <h3 class="hs-feature-card__title">Analytics & Insights</h3>
+            <p class="hs-feature-card__description">
+              Visualisez votre charge mensuelle, identifiez vos journées à risque
+              et recevez des recommandations personnalisées.
+            </p>
+          </article>
+          
+          <article class="hs-feature-card" data-animate style="transition-delay: 0.3s">
+            <div class="hs-feature-card__icon">🔮</div>
+            <h3 class="hs-feature-card__title">Prévention Prédictive</h3>
+            <p class="hs-feature-card__description">
+              Notre algorithme anticipe les surcharges 7 jours à l'avance
+              et suggère des blocages de créneaux.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How It Works ───────────────────────────────────── -->
+    <section class="hs-how-it-works" aria-labelledby="howItWorksTitle">
+      <div class="hs-container">
+        <header class="hs-section-header" data-animate>
+          <span class="hs-section-header__eyebrow">Comment ça marche</span>
+          <h2 id="howItWorksTitle">Trois étapes vers l'équilibre</h2>
+        </header>
+
+        <div class="hs-steps">
+          <div class="hs-step" data-animate style="transition-delay: 0.1s">
+            <div class="hs-step__number">1</div>
+            <div class="hs-step__icon">📅</div>
+            <h3 class="hs-step__title">Planifiez vos RDV</h3>
+            <p class="hs-step__description">
+              Ajoutez vos rendez-vous normalement. Harmony analyse chaque ajout en temps réel.
+            </p>
+          </div>
+          
+          <div class="hs-step__connector" aria-hidden="true"></div>
+          
+          <div class="hs-step" data-animate style="transition-delay: 0.2s">
+            <div class="hs-step__number">2</div>
+            <div class="hs-step__icon">🌿</div>
+            <h3 class="hs-step__title">Suivez votre Score</h3>
+            <p class="hs-step__description">
+              Votre Score Harmony évolue en fonction de votre charge de travail et vos pauses.
+            </p>
+          </div>
+          
+          <div class="hs-step__connector" aria-hidden="true"></div>
+          
+          <div class="hs-step" data-animate style="transition-delay: 0.3s">
+            <div class="hs-step__number">3</div>
+            <div class="hs-step__icon">🧘</div>
+            <h3 class="hs-step__title">Préservez-vous</h3>
+            <p class="hs-step__description">
+              Recevez des alertes avant la surcharge et des suggestions de récupération.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA Section ────────────────────────────────────── -->
+    <section class="hs-cta-section" aria-labelledby="ctaTitle">
+      <div class="hs-container" data-animate>
+        <h2 id="ctaTitle" class="hs-cta-section__title">
+          Prêt à reprendre le contrôle ?
+        </h2>
+        <p class="hs-cta-section__description">
+          Installez Harmony Scheduler en 30 secondes. Aucun compte requis,
+          vos données restent sur votre appareil.
+        </p>
+        <div class="hs-cta-section__buttons">
+          <a href="dashboard.html" class="hs-btn hs-btn--primary hs-btn--lg">
+            Commencer maintenant
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="booking.html" class="hs-btn hs-btn--ghost hs-btn--lg">
+            Voir la démo réservation
+          </a>
+        </div>
+        
+        <div class="hs-cta-section__trust">
+          <div class="hs-trust-badge">
+            <span class="hs-trust-badge__icon">🔒</span>
+            <span>100% local - données chiffrées</span>
+          </div>
+          <div class="hs-trust-badge">
+            <span class="hs-trust-badge__icon">🌿</span>
+            <span>RGPD compliant</span>
+          </div>
+          <div class="hs-trust-badge">
+            <span class="hs-trust-badge__icon">⚡</span>
+            <span>Gratuit et open-source</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="hs-footer" role="contentinfo">
+    <div class="hs-container">
+      <div class="hs-footer__top">
+        <div class="hs-footer__brand">
+          <div class="hs-footer__logo">🌿 Harmony Scheduler</div>
+          <p class="hs-footer__tagline">
+            La gestion de rendez-vous qui prend soin de vous.
+          </p>
+        </div>
+        
+        <nav class="hs-footer__nav" aria-label="Navigation pied de page">
+          <div class="hs-footer__nav-group">
+            <h4 class="hs-footer__nav-title">Produit</h4>
+            <a href="dashboard.html" class="hs-footer__link">Dashboard</a>
+            <a href="booking.html" class="hs-footer__link">Réservation</a>
+            <a href="analytics.html" class="hs-footer__link">Analytics</a>
+          </div>
+          <div class="hs-footer__nav-group">
+            <h4 class="hs-footer__nav-title">Paramètres</h4>
+            <a href="settings.html" class="hs-footer__link">Profil</a>
+            <a href="settings.html#secHarmony" class="hs-footer__link">Harmony</a>
+            <a href="settings.html#secAvailability" class="hs-footer__link">Disponibilités</a>
+          </div>
+        </nav>
+      </div>
+      
+      <div class="hs-footer__bottom">
+        <p class="hs-footer__copy">
+          © 2025 Harmony Scheduler v2.0 · Fait avec 🌿 pour les professionnels indépendants
+        </p>
+        <div class="hs-footer__version">
+          <span class="hs-badge hs-badge--sage">v2.0.0</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Scripts ────────────────────────────────────────── -->
+  <script type="module" src="js/app.js"></script>
+  
+  <!-- Animation d'entrée -->
+  <script>
+    // Animation au scroll simple sans dépendance externe
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('[data-animate]').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+    
+    // Classe d'animation
+    document.head.insertAdjacentHTML('beforeend', `
+      <style>
+        [data-animate].animate-in {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
+        }
+        
+        .hs-hero__stat-value {
+          transition: color 0.3s ease;
+        }
+      </style>
+    `);
+    
+    // Animation des compteurs
+    document.addEventListener('DOMContentLoaded', () => {
+      const counters = document.querySelectorAll('[data-counter]');
+      
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const target = parseInt(entry.target.dataset.counter, 10);
+            const valueEl = entry.target.querySelector('.hs-hero__stat-value');
+            
+            if (valueEl) {
+              let current = 0;
+              const increment = target / 50;
+              const duration = 1500;
+              const stepTime = duration / 50;
+              
+              const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                  current = target;
+                  clearInterval(timer);
+                }
+                valueEl.textContent = Math.floor(current);
+              }, stepTime);
+            }
+            
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      counters.forEach(counter => counterObserver.observe(counter));
+    });
+  </script>
+</body>
+</html>
